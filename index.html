@@ -6,33 +6,34 @@
   <meta http-equiv="refresh" content="60"> <!-- Actualiza cada minuto -->
   <meta name="viewport" content="width=897, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
-html, body {
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  background: #000;
-}
-
-.wrapper {
-  width: 600px;
-  height: 1440px;
-  position: relative;
-  margin: 0 auto;
-  transform: scale(1);
-  transform-origin: top left;
-  }	
-
-  body {
+    html, body {
+      overflow: hidden;
       margin: 0;
-    background-image: url("fondo.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 1440px;
-    width: 600px;
-    font-family: sans-serif;
-    position: relative; /* ¡Importante! */
-    overflow: hidden; /* Por si acaso */
-  }
+      padding: 0;
+      height: 1440px;
+      width: 600px;
+    }
+
+    /* Fondo de video */
+    video#fondo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .wrapper {
+      width: 600px;
+      height: 1440px;
+      position: relative;
+      margin: 0 auto;
+      transform: scale(1);
+      transform-origin: top left;
+      font-family: sans-serif;
+    }	
 
     .contenedor-marcador {
       display: flex;
@@ -43,41 +44,47 @@ html, body {
     }
 
     .score {
-	position: absolute;
+      position: absolute;
       font-size: 50px;
       font-weight: bold;
-      color: #00157F;
+      color: #ffffff;
     }
 
     #score-brasil {
-  position: absolute;
-  left: 140px;
-  top: 790px;
-  transform: translate(-50%, -50%);
-  font-size: 80px;
-  color: #ffffff;
-  font-weight: bold;
+      position: absolute;
+      left: 125px;
+      top: 800px;
+      transform: translate(-50%, -50%);
+      font-size: 75px;
+      color: #ffffff;
+      font-weight: bold;
     }
 
     #score-colombia {
-  position: absolute;
-  left: 460px;
-  top: 790px;
-  transform: translate(-50%, -50%);
-  font-size: 80px;
-  color: #ffffff;
-  font-weight: bold;
-}
-
+      position: absolute;
+      left: 460px;
+      top: 800px;
+      transform: translate(-50%, -50%);
+      font-size: 75px;
+      color: #ffffff;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+  <!-- VIDEO DE FONDO -->
+    <video autoplay muted loop id="fondo">
+    <source src="fondo.mp4" type="video/mp4">
+    Tu navegador no soporta el video.
+  </video>
+
   <div class="wrapper">
     <div class="contenedor-marcador">
       <div id="score-brasil" class="score">-</div>
       <div id="score-colombia" class="score">-</div>
     </div>
   </div>
+
   <script>
     async function cargarMarcador() {
       try {

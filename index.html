@@ -471,7 +471,10 @@
         } catch (error) {
           console.error("Error cargando partidos:", error);
           showStatus("No se pudo leer la hoja de cálculo. Revisa permisos, CORS y JSON.");
-          renderMatch(null);
+    console.error(error);
+
+    setTimeout(loadMatches,5000);
+}
         }
       }
       const DESIGN_WIDTH = 600;

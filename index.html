@@ -452,30 +452,55 @@
         }
       }
 
-      async function loadMatches() {
-        try {
-          const url = `${APPS_SCRIPT_URL}${APPS_SCRIPT_URL.includes("?") ? "&" : "?"}_=${Date.now()}`;
-          const response = await fetch(url, { cache: "no-store" });
+async function loadMatches(retry = 0) {
+  try {
+    const url =
+      `${APPS_SCRIPT_URL}${APPS_SCRIPT_URL.includes("?") ? "&" : "?"}_=${Date.now()}`;
 
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
+    const response = await fetch(url, {
+      cache: "no-store",
+      redirect: "follow"
+    });
 
-          const payload = await response.json();
-          matches = sortUpcoming(normalizeRows(payload));
-          startRotation();
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
-          if (!matches.length) {
-            showStatus("La hoja no devolvió partidos válidos.");
-          }
-        } catch (error) {
-          console.error("Error cargando partidos:", error);
-          showStatus("No se pudo leer la hoja de cálculo. Revisa permisos, CORS y JSON.");
-    console.error(error);
+    const payload = await response.json();
 
-    setTimeout(loadMatches,5000);
+    const newMatches = sortUpcoming(normalizeRows(payload));
+
+    if (newMatches.length) {
+      matches = newMatches;
+      startRotation();
+    }
+
+    if (!matches.length) {
+      showStatus("La hoja no devolvió partidos válidos.");
+    }
+
+  } catch (error) {
+    console.error("Error cargando partidos:", error);
+
+    if (retry < 2) {
+      console.log(`Reintentando... (${retry + 1}/2)`);
+
+      setTimeout(() => {
+        loadMatches(retry + 1);
+      }, 3000);
+
+      return;
+    }
+
+    // Mantener los datos anteriores
+    if (!matches.length) {
+      renderMatch(null);
+    }
+
+    showStatus("No se pudo actualizar la información.");
+  }
 }
-        }
+
       
       const DESIGN_WIDTH = 600;
       const DESIGN_HEIGHT = 1440;
